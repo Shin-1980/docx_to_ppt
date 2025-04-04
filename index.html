@@ -66,6 +66,20 @@
           body: formData
         });
 
+        if (!response.ok) {
+          throw new Error('Failed to generate PowerPoint');
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        downloadLink.href = url;
+        downloadLink.style.display = 'block';
+        downloadLink.click(); // Auto download
+
+        // Optionally reset file input
+        fileInput.value = '';
+
+
       } catch (error) {
         console.error(error);
         alert('An error occurred while generating the PowerPoint');
