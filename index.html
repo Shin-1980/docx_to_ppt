@@ -72,10 +72,16 @@
 
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
-        downloadLink.href = url;
-        downloadLink.style.display = 'block';
-        downloadLink.click(); // Auto download
 
+        // ✅ Create a temporary <a> element for download
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'generated_presentation.pptx';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
         // Optionally reset file input
         fileInput.value = '';
 
