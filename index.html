@@ -4,18 +4,46 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Word to PPT Converter</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 50px;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      color: #333;
+    }
+    input, button, a {
+      margin: 10px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    #downloadLink {
+      display: none;
+      margin-top: 20px;
+      text-decoration: none;
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 4px;
+    }
+  </style>
 </head>
-<body style="font-family: sans-serif; text-align: center; margin-top: 50px;">
+<body>
 
   <h1>Word to PPT Converter</h1>
 
   <input type="file" id="fileInput" accept=".docx" />
-  <br /><br />
+  <br />
   <button onclick="uploadFile()">Generate PPT</button>
-  <br /><br />
-  <a id="downloadLink" style="display:none;" download="generated_presentation.pptx">Download Presentation</a>
+  <br />
+  <a id="downloadLink" download="generated_presentation.pptx">Download Presentation</a>
 
   <script>
+    // ✅ Define backend API URL at the top
+    const backendURL = 'https://word-to-ppt-gcgj.onrender.com/generate-ppt/';
+
     async function uploadFile() {
       const fileInput = document.getElementById('fileInput');
       const file = fileInput.files[0];
@@ -29,7 +57,11 @@
       formData.append('file', file);
 
       try {
-        const response = await fetch('https://word-to-ppt-gcgj.onrender.com/generate-ppt/', {
+        // Optionally show loading state
+        const downloadLink = document.getElementById('downloadLink');
+        downloadLink.style.display = 'none';
+
+        const response = await fetch(backendURL, {
           method: 'POST',
           body: formData
         });
@@ -40,10 +72,13 @@
 
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
-        const downloadLink = document.getElementById('downloadLink');
         downloadLink.href = url;
         downloadLink.style.display = 'block';
-        downloadLink.click(); // Auto-click download
+        downloadLink.click(); // Auto download
+
+        // Optionally reset file input
+        fileInput.value = '';
+
       } catch (error) {
         console.error(error);
         alert('An error occurred while generating the PowerPoint.');
